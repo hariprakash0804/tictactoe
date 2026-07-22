@@ -45,8 +45,19 @@
   let audioCtx = null;
   function getCtx() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
     return audioCtx;
   }
+
+  function unlockAudio() {
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+  window.addEventListener('touchstart', unlockAudio, { passive: true });
+  window.addEventListener('click', unlockAudio, { passive: true });
 
   function beep(freq, duration, type = 'square', vol = 0.05) {
     if (muted) return;
@@ -273,7 +284,7 @@
     for (let i = 0; i < 36; i++) {
       const piece = document.createElement('div');
       piece.classList.add('confetto');
-      piece.style.left = Math.random() * 100 + 'vw';
+      piece.style.left = Math.random() * 95 + '%';
       piece.style.background = colors[Math.floor(Math.random() * colors.length)];
       piece.style.animationDuration = (1.4 + Math.random() * 1.2) + 's';
       piece.style.animationDelay = (Math.random() * 0.3) + 's';
